@@ -1,15 +1,32 @@
 const {readFileSync, promises: fsPromises} = require('fs');
 const file = "./allAboutJavaScript.txt"
 
-// ✅ read file SYNCHRONOUSLY
-const syncReadFile = (filename) => {
-  const contents = readFileSync(filename, 'utf-8');
+var counts = {}
 
-  const arr = contents.split(/\r?\n/);
 
-  console.log(arr)
+const asyncReadFile = async (filename) => {
 
-  return arr;
-}
+    try {
+      const contents = await fsPromises.readFile(filename, 'utf-8');
+      const text = contents.split(/\W+/);
+      const words = text.join("\n");
+      const tokens = words.split(" ");
+      console.log(tokens); 
+      for (var i = 0; i < tokens.length; i++) {
+        let word = tokens[i].toLowerCase();
 
-syncReadFile(file);
+        if(!/\d+/.test(word)) {
+            if(counts[word] === undefined) {
+                counts[word] = 1;
+            } else {
+                counts[word] = counts[word] + 1
+            }
+        }
+      }
+      return tokens;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  
+  asyncReadFile(file);
