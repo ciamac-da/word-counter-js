@@ -1,29 +1,28 @@
-const {readFileSync, promises: fsPromises} = require('fs');
+const {promises: fsPromises} = require('fs');
 const file = "./allAboutJavaScript.txt"
 
 var counts = {}
-
 
 const asyncReadFile = async (filename) => {
 
     try {
       const contents = await fsPromises.readFile(filename, 'utf-8');
       const text = contents.split(/\W+/);
-      const words = text.join("\n");
+      const words = text.join(" ");
       const tokens = words.split(" ");
-      console.log(tokens); 
       for (var i = 0; i < tokens.length; i++) {
-        let word = tokens[i].toLowerCase();
-
-        if(!/\d+/.test(word)) {
-            if(counts[word] === undefined) {
-                counts[word] = 1;
+        const tokenstLowerCase = tokens[i].toLowerCase();
+        const onlyWords = tokenstLowerCase.replace(/[0-9]/g, '');
+        if(isNaN(onlyWords)) {
+            if(counts[onlyWords] === undefined) {
+                counts[onlyWords] = 1;
             } else {
-                counts[word] = counts[word] + 1
+                counts[onlyWords] = counts[onlyWords] + 1
             }
         }
       }
-      return tokens;
+      console.log(counts);
+      return counts;
     } catch (err) {
       console.log(err);
     }
